@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../../../hooks/useAuth";
 import { usePathname } from "next/navigation";
 
 export default function IlanDetailPage() {
@@ -12,7 +12,7 @@ export default function IlanDetailPage() {
   const router = useRouter();
   const pathname = usePathname();
   const ilanId = pathname.split("/").pop();
-  const [ilan, setIlan] = useState(null);
+  const [ilan, setIlan] = useState();
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -53,6 +53,31 @@ export default function IlanDetailPage() {
     }
   }, [router, ilanId]);
 
+  const handleStatusChange = (id, status) => {
+    const token = localStorage.getItem("token");
+    axios
+      .post(`http://localhost:8080/api/v1/admin/makeActive/${id}`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          status: status,
+        },
+      })
+      .then((response) => {
+        // İlanın durumunu güncelle
+        setIlan((prevIlan) => {
+          if (prevIlan.id === id) {
+            return { ...prevIlan, status: status };
+          }
+          return prevIlan;
+        });
+      })
+      .catch((error) => {
+        console.error("İlan durumu güncellenemedi:", error);
+      });
+  };
+
   if (loading) {
     return <p className="text-center text-lg">Yükleniyor...</p>;
   }
@@ -85,29 +110,36 @@ export default function IlanDetailPage() {
           <p className="text-gray-500">Stok: {ilan.product.stock}</p>
         </div>
       )}
-      <div className="flex space-x-2 mt-2">
-        {currentUser && ilan.productOwner === currentUser.username ? (
-          <>
-            <button className="bg-yellow-500 text-white px-4 py-2 rounded">
-              Düzenle
-            </button>
-            <button className="bg-red-500 text-white px-4 py-2 rounded">
-              Sil
-            </button>
-            <button
-              className={`px-4 py-2 rounded ${
-                ilan.status === "ACTIVE" ? "bg-gray-500" : "bg-green-500"
-              } text-white`}
-            >
-              {ilan.status === "ACTIVE" ? "Pasif Yap" : "Aktif Yap"}
-            </button>
-          </>
-        ) : (
-          <button className="bg-green-500 text-white px-4 py-2 rounded">
-            Satın Al
-          </button>
-        )}
-      </div>
+          <div className="flex space-x-2 mt-2">
+                <>
+                  <button className="bg-yellow-500 text-white px-4 py-2 rounded">Düzenle</button>
+                  <button className="bg-red-500 text-white px-4 py-2 rounded">Sil</button>
+                  {ilan.status === 'IN_REVIEW' && (
+                    <button 
+                      className="bg-green-500 text-white px-4 py-2 rounded"
+                      onClick={() => handleStatusChange(ilan.id, 'ACTIVE')}
+                    >
+                      Aktif Yap
+                    </button>
+                  )}
+                  {ilan.status === 'ACTIVE' && (
+                    <button 
+                      className="bg-gray-500 text-white px-4 py-2 rounded"
+                      onClick={() => handleStatusChange(ilan.id, 'PASSIVE')}
+                    >
+                      Pasif Yap
+                    </button>
+                  )}
+                  {ilan.status === 'PASSIVE' && (
+                    <button 
+                      className="bg-green-500 text-white px-4 py-2 rounded"
+                      onClick={() => handleStatusChange(ilan.id, 'ACTIVE')}
+                    >
+                      Aktif Yap
+                    </button>
+                  )}
+                </>
+              </div>
     </div>
   );
 }

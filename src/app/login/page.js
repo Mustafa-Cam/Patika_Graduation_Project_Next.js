@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+// import {jwtDecode} from 'jwt-decode'; // jwt-decode paketini ekle zaten useAuth'da eklendi. o yüzden burada eklemiyoruz yoksa hata verir.
+import { getRoleFromToken } from '../utils/auth';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../hooks/useAuth';
 
@@ -45,12 +47,18 @@ export default function LoginPage() {
       const token = await response.text();
       console.log('Received data:', token); // Token'i kontrol etmek için ekrana yazdır
       localStorage.setItem('token', token); // Token'ı saklama
+
       
+      const userRole = getRoleFromToken(token);
+      console.log('User role:', userRole);
       toast.success('Başarıyla giriş yapıldı');
-      
-      // Yönlendirme işlemi
-      router.push('/dashboard');
-     
+
+      if (userRole === 'ROLE_ADMIN') {
+        router.push('/admin'); // Admin rolü varsa admin sayfasına yönlendir
+      } else {
+        router.push('/dashboard'); // Diğer roller için dashboard sayfasına yönlendir
+      }
+
     } catch (error) {
       console.error('Fetch error:', error);
       toast.error('Yanlış kullanıcı adı veya şifre');
