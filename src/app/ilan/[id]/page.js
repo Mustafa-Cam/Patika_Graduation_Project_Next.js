@@ -3,8 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { useAuth } from "../../hooks/useAuth";
+
 import { usePathname } from "next/navigation";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function IlanDetailPage() {
   useAuth();
@@ -53,6 +54,30 @@ export default function IlanDetailPage() {
     }
   }, [router, ilanId]);
 
+  const handleStatusChange = (id, status) => {
+    const token = localStorage.getItem('token');
+    axios.post(`http://localhost:8080/api/v1/ads/${id}/status`, null, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      },
+      params: {
+        status: status
+      }
+    })
+    .then((response) => {
+      // İlanın durumunu güncelle
+      setIlan((prevIlan) => {
+        if (prevIlan.id === id) {
+          return { ...prevIlan, status: status };
+        }
+        return prevIlan;
+      });
+    })
+      .catch(error => {
+        console.error('İlan durumu güncellenemedi:', error);
+      });
+  };
+
   if (loading) {
     return <p className="text-center text-lg">Yükleniyor...</p>;
   }
@@ -60,6 +85,9 @@ export default function IlanDetailPage() {
   if (!ilan) {
     return <p className="text-center text-lg">İlan bulunamadı.</p>;
   }
+
+  const isInReview = ilan.status === "IN_REVIEW";
+  const isProductOwner = currentUser && ilan.productOwner === currentUser.username;
 
   return (
     <div className="p-4">
@@ -86,7 +114,7 @@ export default function IlanDetailPage() {
         </div>
       )}
       <div className="flex space-x-2 mt-2">
-        {currentUser && ilan.productOwner === currentUser.username ? (
+        {isProductOwner && (
           <>
             <button className="bg-yellow-500 text-white px-4 py-2 rounded">
               Düzenle
@@ -95,14 +123,22 @@ export default function IlanDetailPage() {
               Sil
             </button>
             <button
-              className={`px-4 py-2 rounded ${
-                ilan.status === "ACTIVE" ? "bg-gray-500" : "bg-green-500"
-              } text-white`}
+              className={`px-4 py-2 rounded ${isInReview ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-gray-500 text-white'}`}
+              onClick={() => !isInReview && handleStatusChange(ilan.id, "PASSIVE")}
+              disabled={isInReview}
             >
-              {ilan.status === "ACTIVE" ? "Pasif Yap" : "Aktif Yap"}
+              Pasif Yap
+            </button>
+            <button
+              className={`px-4 py-2 rounded ${isInReview ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-green-500 text-white'}`}
+              onClick={() => !isInReview && handleStatusChange(ilan.id, "ACTIVE")}
+              disabled={isInReview}
+            >
+              Aktif Yap
             </button>
           </>
-        ) : (
+        )}
+        {!isProductOwner && (
           <button className="bg-green-500 text-white px-4 py-2 rounded">
             Satın Al
           </button>

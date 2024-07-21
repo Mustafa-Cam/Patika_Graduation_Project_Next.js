@@ -7,9 +7,9 @@ import Footer from "../components/Footer"; // Admin paneli için ortak bir foote
 const AdminLayout = ({ children }) => {
   return (
         <PrivateRoute>
-      <>
+      <div>
       {children} 
-      </>
+      </div>
         </PrivateRoute>
   );
 };

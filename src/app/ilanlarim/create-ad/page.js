@@ -4,7 +4,8 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useAuth } from "@/app/hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
+
 
 export default function createAdPage() {
   useAuth();

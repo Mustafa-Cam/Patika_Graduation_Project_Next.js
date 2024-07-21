@@ -24,4 +24,14 @@ export const isTokenExpired = (token) => {
       return null;
     }
   };
+  export const getUserNameFromToken = (token) => {
+    if (!token) return null;
+    try {
+      const decoded = jwtDecode(token);
+      return decoded.sub; // Token'da username bilgisi.
+    } catch (error) {
+      console.error('Token decoding error:', error);
+      return null;
+    }
+  };
   

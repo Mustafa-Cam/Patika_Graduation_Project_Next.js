@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../hooks/useAuth";
+import { getUserNameFromToken } from "../utils/auth";
+
 
 export default function PaketlerPage() {
   useAuth();
@@ -25,7 +27,6 @@ export default function PaketlerPage() {
       type: "BIG",
       description:
         "Big paket, 1 aylık geçerlilik süresi ve 60 ilan hakkı sunar.",
-     
     },
   ];
 
@@ -33,10 +34,32 @@ export default function PaketlerPage() {
   const [enteredNumber, setEnteredNumber] = useState("");
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [userPackage, setUserPackage] = useState(null);
+  const [refresh, setRefresh] = useState(null);
+
+  useEffect(() => {
+    // Kullanıcıya ait paketleri getir
+    const fetchUserPackages = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const username = getUserNameFromToken(token); // Kullanıcı adını al
+        console.log("Kullanıcı adı:", username);
+        const response = await axios.get(`http://localhost:8080/api/v1/packages/username/${username}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserPackage(response.data);
+        console.log("Kullanıcı paketi:", response.data);
+      } catch (error) {
+        console.error("Kullanıcı paketlerini getirme hatası:", error);
+      }
+    };
+
+    fetchUserPackages();
+  }, [refresh]);
 
   const getRandomNumber = () => {
-
-    // Rastgele sayı almak için istek at
     axios
       .get("http://localhost:8080/api/v1/packages/purchase/random-number", {
         headers: {
@@ -52,7 +75,6 @@ export default function PaketlerPage() {
   };
 
   const handlePurchase = () => {
-    // Satın alma işlemini gerçekleştirmek için API'ye istek gönder
     axios
       .post("http://localhost:8080/api/v1/packages/purchase", null, {
         headers: {
@@ -68,6 +90,7 @@ export default function PaketlerPage() {
         setShowModal(false);
         setEnteredNumber("");
         setRandomNumber(null);
+        setRefresh(Math.random());
       })
       .catch((error) => {
         console.error("Paket satın alma hatası:", error);
@@ -97,7 +120,7 @@ export default function PaketlerPage() {
               textAlign: "center",
             }}
           >
-            <h2>{paket.type.charAt(0).toUpperCase() + paket.type.slice(1)}</h2>
+            <h2>{paket.type.charAt(0).toUpperCase() + paket.type.slice(1).toLowerCase()}</h2>
             <p>{paket.description}</p>
             <button
               onClick={() => {
@@ -119,6 +142,32 @@ export default function PaketlerPage() {
         ))}
       </div>
 
+      {userPackage && (
+  <div style={{ marginTop: "20px", width: "100%", textAlign: "center", color: "#007bff" }}>
+    <h2 style={{ fontWeight: "bold" }}>Mevcut Paketiniz</h2>
+    <div
+      style={{
+        border: "1px solid #ddd",
+        borderRadius: "8px",
+        padding: "20px",
+        textAlign: "center",
+        backgroundColor: "#f8f9fa",
+        maxWidth: "300px",
+        margin: "0 auto",
+      }}
+    >
+      <h3 style={{ fontWeight: "bold" }}>
+        {userPackage.packageType.charAt(0).toUpperCase() + userPackage.packageType.slice(1).toLowerCase()}
+      </h3>
+      <p style={{ fontWeight: "bold" }}>{userPackage.description || "Bu paketin açıklaması bulunmamaktadır."}</p>
+      <p style={{ fontWeight: "bold" }}>İlan Sayısı: {userPackage.adCount}</p>
+      <p style={{ fontWeight: "bold" }}>Başlangıç Tarihi: {new Date(userPackage.startDate).toLocaleDateString()}</p>
+      <p style={{ fontWeight: "bold" }}>Bitiş Tarihi: {new Date(userPackage.expiryDate).toLocaleDateString()}</p>
+    </div>
+  </div>
+)}
+
+
       {showModal && (
         <div
           style={{
@@ -127,7 +176,7 @@ export default function PaketlerPage() {
             left: 0,
             width: "100%",
             height: "100%",
-            backgroundColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: 'rgba(12,25,0,0.5)',
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -149,7 +198,7 @@ export default function PaketlerPage() {
                   onClick={getRandomNumber}
                   style={{
                     backgroundColor: "#007bff",
-                    color: "Black",
+                    color: "white",
                     border: "none",
                     borderRadius: "4px",
                     padding: "10px 20px",
@@ -192,8 +241,8 @@ export default function PaketlerPage() {
             )}
             <button
               onClick={() => {
-                setShowModal(false)
-                setRandomNumber(null);   
+                setShowModal(false);
+                setRandomNumber(null);
               }}
               style={{
                 backgroundColor: "#6c757d",

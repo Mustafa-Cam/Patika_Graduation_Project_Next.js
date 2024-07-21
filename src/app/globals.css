@@ -16,6 +16,13 @@
   }
 }
 
+html, body {
+  height: 100%; /* HTML ve Body elemanlarına tam yükseklik verin */
+  margin: 0;
+  padding: 0;
+  overflow: auto; /* Gerektiğinde kaydırma çubuğu göstermek için */
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -25,10 +32,13 @@ body {
     )
     rgb(var(--background-start-rgb));
   @apply flex flex-col min-h-screen;
+  overflow-y: auto; /* Yalnızca dikey kaydırma */
 }
 
 main {
   @apply flex-grow;
+  min-height: 100vh; /* Ana içeriğin tam ekran olmasını sağlamak için */
+  overflow-y: auto; /* Ana içeriğe dikey kaydırma eklemek için */
 }
 
 @layer utilities {
