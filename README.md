@@ -115,3 +115,4 @@ Admin ilanlarn durumunu değiştirebilir. Asıl görevi ise In_review olan ilanl
 ![Ekran görüntüsü 2024-07-22 124209](https://github.com/user-attachments/assets/093fd0e8-ff2c-4301-b7c0-8c83044dd189)
 ![Ekran görüntüsü 2024-07-22 124234](https://github.com/user-attachments/assets/7d996388-d997-483c-8259-05abb590309b)
 
+## Güncelleme işlemlerim de eksik tamamlayacağım. Silme işlemini yapmıyoruz zaten pasif ve aktif yapıyoruz. Aktif ve pasif ilanlar için de ayrı bir sayfa oluşturacağım.
