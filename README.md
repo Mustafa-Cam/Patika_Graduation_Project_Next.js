@@ -56,7 +56,7 @@ Kayıt sayfasında eğer şifreyi 8 karakterden kısa ise  ve 1 rakam içermiyor
 ## Giriş Sayfası
 ![Ekran Görüntüsü (66)](https://github.com/user-attachments/assets/6cae5706-6f3c-4d99-aca9-5d35979d3449)
 
-giriş sayfasında doğru bilgiler girilmelidir. Giriş yapmadan diğer sayfalara erişilemez. (Sadece Frontend de yaptım backend tarafında da yapacağım.)
+giriş sayfasında doğru bilgiler girilmelidir (Sadece Frontend de yaptım backend tarafında da yapacağım). Giriş yapmadan diğer sayfalara erişilemez(jwt auth). 
 
 ## Dashboard sayfası
 ![Ekran Görüntüsü (65)](https://github.com/user-attachments/assets/be536d9d-28f8-41b9-a7ff-bc46cf3a6edf)
