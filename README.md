@@ -36,6 +36,7 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 "# PatikaGraduationNext" 
 
+# Patika && Fmmss Bilişim FullStack Bootcamp Frontend Projesi
 
 ## projeyi ayağa kaldırdıktan sonra backend tarafı için  https://github.com/Mustafa-Cam/PatikaMsGp   bu bağlantıdaki backend projesini git clone ile bilgisayarınıza clone edip ayağa kaldırdıktan sonra projeyi tamamıyla çalıştırabilirsiniz.(Frontend kötü oldu biliyorum ama düzenleyeceğim. )
 
