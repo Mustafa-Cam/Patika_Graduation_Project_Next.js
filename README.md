@@ -38,6 +38,8 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 # Patika && Fmmss Bilişim FullStack Bootcamp Frontend Projesi
 
+ilk olarak gerekli modüller eklenmeli. (npm i   veya npm install)
+
 ## projeyi ayağa kaldırdıktan sonra backend tarafı için  https://github.com/Mustafa-Cam/PatikaMsGp   bu bağlantıdaki backend projesini git clone ile bilgisayarınıza clone edip ayağa kaldırdıktan sonra projeyi tamamıyla çalıştırabilirsiniz.(Frontend kötü oldu biliyorum ama düzenleyeceğim. )
 
 # Projeden görseller.
